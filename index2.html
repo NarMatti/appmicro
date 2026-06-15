@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AltiroSalgo</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+
+font-family:Arial,sans-serif;
+
+background:#eef3f8;
+
+color:#333;
+
+}
+
+header{
+
+background:#0d6efd;
+
+color:white;
+
+padding:25px;
+
+text-align:center;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+
+}
+
+header h1{
+
+font-size:38px;
+
+}
+
+header p{
+
+margin-top:8px;
+
+font-size:16px;
+
+opacity:0.9;
+
+}
+
+.container{
+
+max-width:600px;
+
+margin:25px auto;
+
+padding:15px;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+border-radius:18px;
+
+margin-bottom:20px;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+
+}
+
+.card h2{
+
+margin-bottom:15px;
+
+}
+
+.bus{
+
+background:#e9f3ff;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-top:12px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:10px;
+
+font-size:16px;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+background:#0d6efd;
+
+color:white;
+
+}
+
+button:hover{
+
+background:#0b5ed7;
+
+}
+
+#mensaje{
+
+margin-top:10px;
+
+font-weight:bold;
+
+color:green;
+
+}
+
+.footer{
+
+text-align:center;
+
+margin:30px;
+
+font-size:14px;
+
+color:#777;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🚍 AltiroSalgo</h1>
+
+<p>Tu compañero inteligente para el transporte público.</p>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>📍 Mi ubicación</h2>
+
+<p id="ubicacion">
+
+Buscando ubicación...
+
+</p>
+
+<p id="coordenadas"></p>
+
+</div>
+
+<div class="card">
+
+<h2>🚍 Micros cercanas</h2>
+
+<div class="bus">
+
+<h3>🚍 Micro 301</h3>
+
+<p>⏱️ Llega en 3 minutos</p>
+
+<p>👥 Ocupación: 40%</p>
+
+<p>🪑 Asientos disponibles: 12</p>
+
+<p>⭐ Recomendada</p>
+
+</div>
+
+<div class="bus">
+
+<h3>🚍 Micro 405</h3>
+
+<p>⏱️ Llega en 6 minutos</p>
+
+<p>👥 Ocupación: 85%</p>
+
+<p>🪑 Asientos disponibles: 2</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>💳 Pago digital</h2>
+
+<button>💳 Débito</button>
+
+<button>💳 Crédito</button>
+
+<button>🎓 TNE</button>
+
+<button>📱 QR</button>
+
+</div>
+
+<div class="card">
+
+<h2>♿ Accesibilidad</h2>
+
+<button onclick="solicitarRampa()">
+
+Solicitar rampa
+
+</button>
+
+<p id="mensaje"></p>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 Recomendación inteligente</h2>
+
+<p id="recomendacion">
+
+Te recomendamos la micro 301 porque llegará antes y tiene más asientos disponibles.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="footer">
+
+AltiroSalgo © 2026
+
+</div>
+
+<script>
+
+function solicitarRampa(){
+
+document.getElementById("mensaje").innerHTML=
+
+"✅ Solicitud enviada al conductor";
+
+}
+
+async function obtenerUbicacion(){
+
+if(!navigator.geolocation){
+
+document.getElementById("ubicacion").innerHTML=
+
+"GPS no disponible";
+
+return;
+
+}
+
+navigator.geolocation.getCurrentPosition(
+
+async(posicion)=>{
+
+const lat=posicion.coords.latitude;
+
+const lon=posicion.coords.longitude;
+
+try{
+
+const respuesta=await fetch(
+
+`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+
+);
+
+const datos=await respuesta.json();
+
+const ciudad=
+
+datos.address.city ||
+
+datos.address.town ||
+
+datos.address.village ||
+
+datos.address.municipality ||
+
+datos.address.state ||
+
+"Ubicación actual";
+
+document.getElementById("ubicacion").innerHTML=
+
+`📍 ${ciudad}`;
+
+document.getElementById("coordenadas").innerHTML=
+
+`🌎 ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+
+}
+
+catch(error){
+
+document.getElementById("ubicacion").innerHTML=
+
+"📍 Ubicación detectada";
+
+}
+
+},
+
+()=>{
+
+document.getElementById("ubicacion").innerHTML=
+
+"No se pudo obtener la ubicación";
+
+}
+
+);
+
+}
+
+obtenerUbicacion();
+
+</script>
+
+</body>
+
+</html>
