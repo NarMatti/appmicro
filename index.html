@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SmartBus Chile</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f2f2f2;
+}
+
+header{
+background:#0066cc;
+color:white;
+padding:20px;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+}
+
+.container{
+max-width:450px;
+margin:20px auto;
+padding:20px;
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:20px;
+
+border-radius:15px;
+
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+
+}
+
+button{
+
+width:100%;
+
+padding:15px;
+
+font-size:18px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+background:#0066cc;
+
+color:white;
+
+}
+
+.bus{
+
+padding:10px;
+
+margin-top:10px;
+
+background:#e8f4ff;
+
+border-radius:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+🚍 SmartBus Chile
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>📍 Mi ubicación</h2>
+
+<p>Viña del Mar</p>
+
+<p>Paradero cercano: Avenida Libertad</p>
+
+</div>
+
+<div class="card">
+
+<h2>🚍 Micros cercanas</h2>
+
+<div class="bus">
+
+<h3>301</h3>
+
+<p>⏱️ 3 minutos</p>
+
+<p>👥 40% ocupada</p>
+
+<p>🪑 12 asientos disponibles</p>
+
+<p>⭐ Recomendada</p>
+
+</div>
+
+<div class="bus">
+
+<h3>405</h3>
+
+<p>⏱️ 6 minutos</p>
+
+<p>👥 85% ocupada</p>
+
+<p>🪑 2 asientos disponibles</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>💳 Pago</h2>
+
+<button>💳 Débito</button>
+
+<button>💳 Crédito</button>
+
+<button>🎓 TNE</button>
+
+<button>📱 QR</button>
+
+</div>
+
+<div class="card">
+
+<h2>♿ Accesibilidad</h2>
+
+<button onclick="rampa()">
+
+Solicitar rampa
+
+</button>
+
+<p id="mensaje"></p>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 Recomendación</h2>
+
+<p>
+
+Te recomendamos la micro 301 porque llegará antes y tiene más asientos disponibles.
+
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+function rampa(){
+
+document.getElementById("mensaje")
+
+.innerHTML=
+
+"✅ Solicitud enviada al conductor";
+
+}
+
+</script>
+
+</body>
+
+</html>
