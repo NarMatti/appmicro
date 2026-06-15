@@ -7,114 +7,102 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SmartBus Chile</title>
+<title>AltiroSalgo</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
 
 *{
 box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-
-margin:0;
-
 font-family:Arial,sans-serif;
-
-background:#f0f4f8;
-
+background:#eef3f8;
+color:#333;
 }
 
 header{
-
-background:#0066cc;
-
+background:#0d6efd;
 color:white;
-
-padding:20px;
-
+padding:25px;
 text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
 
-font-size:30px;
+header h1{
+font-size:38px;
+}
 
-font-weight:bold;
-
-box-shadow:0 2px 10px rgba(0,0,0,0.2);
-
+header p{
+margin-top:8px;
+font-size:16px;
 }
 
 .container{
-
-max-width:500px;
-
-margin:20px auto;
-
+max-width:800px;
+margin:25px auto;
 padding:15px;
-
 }
 
 .card{
-
 background:white;
-
 padding:20px;
-
+border-radius:18px;
 margin-bottom:20px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
 
-border-radius:15px;
-
-box-shadow:0 0 10px rgba(0,0,0,0.15);
-
+.card h2{
+margin-bottom:15px;
 }
 
 .bus{
-
-background:#e8f4ff;
-
+background:#e9f3ff;
 padding:15px;
-
 border-radius:12px;
-
-margin-top:15px;
-
+margin-top:12px;
 }
 
 button{
-
 width:100%;
-
 padding:14px;
-
-font-size:17px;
-
 margin-top:10px;
-
+font-size:16px;
 border:none;
-
 border-radius:10px;
-
 cursor:pointer;
-
-background:#0066cc;
-
+background:#0d6efd;
 color:white;
-
 }
 
 button:hover{
-
-background:#0050a0;
-
+background:#0b5ed7;
 }
 
 #mensaje{
-
-font-weight:bold;
-
-color:green;
-
 margin-top:10px;
+font-weight:bold;
+color:green;
+}
 
+#mapa{
+height:450px;
+width:100%;
+border-radius:15px;
+}
+
+.footer{
+text-align:center;
+margin:30px;
+font-size:14px;
+color:#777;
 }
 
 </style>
@@ -125,7 +113,9 @@ margin-top:10px;
 
 <header>
 
-🚍 SmartBus Chile
+<h1>🚍 AltiroSalgo</h1>
+
+<p>Tu compañero inteligente para el transporte público.</p>
 
 </header>
 
@@ -179,6 +169,14 @@ Buscando ubicación...
 
 <div class="card">
 
+<h2>🗺️ Recorrido simulado</h2>
+
+<div id="mapa"></div>
+
+</div>
+
+<div class="card">
+
 <h2>💳 Pago digital</h2>
 
 <button>💳 Débito</button>
@@ -219,7 +217,17 @@ Te recomendamos la micro 301 porque llegará antes y tiene más asientos disponi
 
 </div>
 
+<div class="footer">
+
+AltiroSalgo © 2026
+
+</div>
+
 <script>
+
+let mapa;
+
+let micro;
 
 function solicitarRampa(){
 
@@ -243,11 +251,13 @@ return;
 
 navigator.geolocation.getCurrentPosition(
 
-async (posicion)=>{
+async(posicion)=>{
 
 const lat=posicion.coords.latitude;
 
 const lon=posicion.coords.longitude;
+
+iniciarMapa(lat,lon);
 
 try{
 
@@ -267,6 +277,8 @@ datos.address.town ||
 
 datos.address.village ||
 
+datos.address.municipality ||
+
 datos.address.state ||
 
 "Ubicación actual";
@@ -277,13 +289,11 @@ document.getElementById("ubicacion").innerHTML=
 
 document.getElementById("coordenadas").innerHTML=
 
-`Latitud: ${lat.toFixed(5)}<br>
-
-Longitud: ${lon.toFixed(5)}`;
+`🌎 ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
 
 }
 
-catch(error){
+catch{
 
 document.getElementById("ubicacion").innerHTML=
 
@@ -302,6 +312,98 @@ document.getElementById("ubicacion").innerHTML=
 }
 
 );
+
+}
+
+function iniciarMapa(lat,lon){
+
+const recorrido=[
+
+[lat-0.0020, lon-0.0030],
+
+[lat-0.0010, lon-0.0020],
+
+[lat, lon-0.0010],
+
+[lat+0.0010, lon],
+
+[lat+0.0020, lon+0.0010]
+
+];
+
+mapa=L.map('mapa').setView([lat,lon],15);
+
+L.tileLayer(
+
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+{
+
+maxZoom:19
+
+}
+
+).addTo(mapa);
+
+L.marker([lat,lon])
+
+.addTo(mapa)
+
+.bindPopup('📍 Tu ubicación')
+
+.openPopup();
+
+L.polyline(
+
+recorrido,
+
+{
+
+color:'blue',
+
+weight:6
+
+}
+
+).addTo(mapa);
+
+L.marker(recorrido[0])
+
+.addTo(mapa)
+
+.bindPopup('🚏 Inicio');
+
+L.marker(recorrido[4])
+
+.addTo(mapa)
+
+.bindPopup('🏁 Destino');
+
+micro=L.marker(recorrido[0])
+
+.addTo(mapa)
+
+.bindPopup('🚍 Micro 301');
+
+let posicion=0;
+
+setInterval(()=>{
+
+posicion++;
+
+if(posicion>=recorrido.length){
+
+posicion=0;
+
+}
+
+micro.setLatLng(
+
+recorrido[posicion]
+
+);
+
+},2500);
 
 }
 
